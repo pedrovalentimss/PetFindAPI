@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
 
 const User = require('../models/User');
 
@@ -9,7 +10,7 @@ const router = express.Router();
 
      try {
         if(await User.findOne({ email }))
-        return res.status(400).send({ error: 'User already exists' });
+            return res.status(400).send({ error: 'User already exists' });
 
         const user = await User.create(req.body); 
 
@@ -21,4 +22,18 @@ const router = express.Router();
      }
  });
 
- module.exports = app => app.use('/auth', router);
+ router.post('/auth', async (req, res) => {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email }).select('+password');   
+
+    if(!user)
+        return res.status(400).send({ error: 'User not found' });
+
+    if(!await bcrypt.compare(password, user.password))
+        return res.status(400).send({ erro: 'Invalid password' });
+
+    res.send({ user });
+ });
+
+ module.exports = app => app.use('/user', router);
