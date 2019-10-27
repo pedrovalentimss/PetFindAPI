@@ -1,27 +1,33 @@
 const mongoose = require('../db');
 
-const UserSchema = new mongoose.Schema({
+const PetSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,      
     },
-    email: {
-        type: String,
-        unique: true,
-        required: true,
-        lowercase: true,
-    },
-    password: {
+    type: {
         type: String,
         required: true,
-        select: false,
     },
-    createdAt: {
+    size: {
+        type: String,
+        required: true,
+    },
+    race: {
+        type: String,
+    },
+    color: {
+        type: String,
+    },
+    joinedAt: {
         type: Date,
         default: Date.now,
     },
+    url: {
+        type: String
+    }
 });
 
-const User = mongoose.model('User', UserSchema);
+const Pet = mongoose.model('Pet', PetSchema);
 
-module.exports = User;
+module.exports = Pet;
